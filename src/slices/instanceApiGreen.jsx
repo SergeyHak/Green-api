@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
-    IdInstance: '',
-    ApiTokenInstance: '',
-    UserNumber:'',
+  IdInstance: "",
+  ApiTokenInstance: "",
+  UserNumber: "",
 };
 
 const userSlice = createSlice({
@@ -12,8 +12,8 @@ const userSlice = createSlice({
     setUser(state, action) {
       state.IdInstance = action.payload.IdInstance;
       state.ApiTokenInstance = action.payload.ApiTokenInstance;
-      state.UserNumber = action.payload.UserNumber
-    },  
+      state.UserNumber = action.payload.UserNumber;
+    },
   },
 });
 

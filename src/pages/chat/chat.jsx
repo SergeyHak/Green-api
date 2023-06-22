@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import * as S from "./style";
 import InputMask from "react-input-mask";
 import sendMessage from "../../api/sendMessage";
+import receiveNotification from "../../api/receiveNotification";
+import deleteReceiveNotification from "../../api/deleteReceiveNotification";
 
 export default function Chat() {
   const [value, setValue] = useState("");
@@ -19,24 +21,25 @@ export default function Chat() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      receiveNotification();
-      deleteReceiveNotification()
-    }, 5000);   
-    return () => clearInterval(interval,);
-    
+      receiveNotification({
+        userPhone: userPhone,
+        setTodos: setTodos,
+        todos: todos,
+        setReceiptId: setReceiptId,
+        idInstance: idInstance,
+        apiTokenInstance: apiTokenInstance,
+      });
+    }, 5000);
+    return () => clearInterval(interval);
   });
 
-  useEffect(() => {  
-      deleteReceiveNotification()    
+  useEffect(() => {
+    deleteReceiveNotification({
+      idInstance: idInstance,
+      apiTokenInstance: apiTokenInstance,
+      receiptId: receiptId,
+    });
   });
- 
-
-  function addMessage() {
-    if (value !== "") {
-      setTodos([...todos, value]);
-      setValue("");
-    }
-  }
 
   const deleteMessage = (text) => {
     const newTodos = todos.filter((message) => {
@@ -45,42 +48,13 @@ export default function Chat() {
     setTodos(newTodos);
   };
 
-  async function receiveNotification() {
-    try {
-      const data = await (
-        await fetch(
-          `https://api.green-api.com/waInstance${idInstance}/receiveNotification/${apiTokenInstance}`,
-          {
-            method: "GET",
-          }
-        )
-      ).json();
-      let message = "";
-      if (data.body.senderData.chatId === `${userPhone}@c.us`) {
-        message = data.body.messageData.textMessageData.textMessage;
-      }
-      if (message !== "") {
-        setTodos([...todos, message]);
-      }
-      console.log(data);
-      console.log(message);
-      setReceiptId(data.receiptId);
-    } catch (err) {
-      console.log(err.message);
+  function addMessage() {
+    if (value !== "") {
+      setTodos([...todos, value]);
+      setValue("");
     }
   }
 
-  async function deleteReceiveNotification() {
-    const data = await (
-      await fetch(
-        `https://api.green-api.com/waInstance${idInstance}/deleteNotification/${apiTokenInstance}/${receiptId}`,
-        {
-          method: "DELETE",
-        }
-      )
-    ).json();
-    console.log(data)
-  }
   function sendMessages() {
     sendMessage({
       idInstance: idInstance,
@@ -92,20 +66,6 @@ export default function Chat() {
     });
     addMessage();
   }
-  function checkMessages() {
-    receiveNotification();
-  }
-
-  // function addTextMessage() {
-  //   if (chatId === `${userPhone}@c.us` && get !== "") {
-  //     console.log("сообщение добавлено");
-  //     // setTodos([...todos, get]);
-  //     // setGet("");
-  //     deleteReceiveNotification();
-  //   } else {
-  //     deleteReceiveNotification();
-  //   }
-  // }
 
   return (
     <S.ContentDiv>
@@ -147,8 +107,8 @@ export default function Chat() {
         }}
       />
       <button onClick={sendMessages}>Отправить</button>
-      <button onClick={checkMessages}>Проверить входящие</button>
-      <button onClick={deleteReceiveNotification}>Удалить</button>
+      {/* <button onClick={checkMessages}>Проверить входящие</button>
+      <button onClick={deleteReceiveNotification}>Удалить</button> */}
       {todos?.length > 0 ? (
         <ul>
           {todos.map((todo, index) => (

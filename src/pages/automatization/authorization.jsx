@@ -2,8 +2,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import * as S from "./style";
 import { setUser } from "../../slices/instanceApiGreen";
-import { Link, useNavigate } from "react-router-dom";
-import InputMask from 'react-input-mask';
+import { useNavigate } from "react-router-dom";
+import InputMask from "react-input-mask";
 
 export default function Authorization() {
   const dispatch = useDispatch();
@@ -24,7 +24,6 @@ export default function Authorization() {
       navigate("/chat", { replace: true })
     );
   }
-//   console.log(userId)
 
   return (
     <S.ContentDiv>
@@ -33,7 +32,7 @@ export default function Authorization() {
         <input
           type="text"
           placeholder="Введите IdInstance"
-          value={id}          
+          value={id}
           onChange={(e) => {
             setId(e.target.value);
           }}
@@ -48,14 +47,14 @@ export default function Authorization() {
         />
         <InputMask
           type="tel"
-          mask='79999999999' 
+          mask="79999999999"
           placeholder="Введите номер"
           value={userNumber}
           onChange={(e) => {
             setUserNumber(e.target.value);
-          }}>            
-          </InputMask>
-        <button onClick={setData}>Создать чат</button>               
+          }}
+        ></InputMask>
+        <button onClick={setData}>Создать чат</button>
       </S.UserDataDiv>
     </S.ContentDiv>
   );
